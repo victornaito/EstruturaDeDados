@@ -29,19 +29,26 @@ int main()
 
 	Celula* raiz = NULL;
 
+	printf("Insira a quantidade n de linhas da matriz: ");
 	scanf("%d", &n);
+	printf("\nInsira a quantidade m de colunas da matriz:");
 	scanf("%d", &m);
 
 	inicializacao(&raiz, n, m);
 
-	printf("\nInsira x e sua coordenada: ");
-	scanf("%d", &x);
-	printf("\n Insira linha: ");
-	scanf("%d", &l);
-	printf("\nInsira coluna: ");
-	scanf("%d", &c);
-	atribui(x, l, c, raiz);
-
+	printf("\nInsira a quantidade de números que você deseja inserir na matriz: ");
+	scanf("%d", &num);
+	for(i = 0; i < num; i++)
+	{
+		printf("\nInsira o elemento X: ");
+		scanf("%d", &x);
+		printf("\n Insira a linha: ");
+		scanf("%d", &l);
+		printf("\nInsira a coluna: ");
+		scanf("%d", &c);
+		atribui(x, l, c, raiz);
+	}
+	
 	imprime(raiz);
 
 	/*for(i = 0; i < n; i++) 
