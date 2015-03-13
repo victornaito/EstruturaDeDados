@@ -1,0 +1,16 @@
+/* número de linhas */
+3
+/* número de colunas */
+3
+/* número de células a serem inseridas */
+1   /* n = 1, sendo n >= 0 */
+
+/* faça n vezes*/
+/* {  */
+      /* insira o elemento a ser inserido na matriz*/
+        8
+      /* insira a posicão referente a linha */
+        1
+      /* insira o elemento a ser inserido na matriz */
+        1
+/*  } */
