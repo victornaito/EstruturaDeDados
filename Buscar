@@ -1,0 +1,36 @@
+/*
+Na main colocar o seguinte codigo:
+
+printf("\nInsira o elemento X diferente de ZERO a ser buscado: ");
+scanf("%d", &x);
+if(x != 0){
+    bus = busca(x, raiz);
+    if(bus == NULL) printf("NULL\n");
+    else printf("%d\n", bus->info);
+}
+imprime(raiz);
+
+*/
+
+
+Celula *busca(int x, Celula *raiz){
+    Celula* linha = NULL;
+    Celula* percorreLinha = NULL;
+
+    // controla as linhas
+    // percorreLinha e linha recebe posicao 0x-1
+    percorreLinha = linha = raiz->s;
+    while(linha->l != -1){
+        // percorreLinha recebe posicao 0x0 a priori
+        percorreLinha = linha->e;
+        while(percorreLinha->c != -1){
+            //printf("percorreLinha->info == %d\nX == %d\n", percorreLinha->info, x);
+            if(percorreLinha->info == x){
+                return percorreLinha;
+            }
+            percorreLinha = percorreLinha->e;
+        }
+        linha = linha->s;
+    }
+    return NULL;
+}
