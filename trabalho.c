@@ -16,6 +16,7 @@ void imprime(Celula*);
 /* Atribui x a uma matriz esparsa raiz na linha l e coluna c */
 void atribui(int x, int l, int c, Celula* raiz);
 Celula* busca(int x, Celula* raiz);
+Celula *buscaPeloIndice (Celula *raiz, int L, int C);
 Celula* soma(Celula* a, Celula* b);
 Celula* multi(Celula*a, Celula* b);
 
@@ -26,6 +27,7 @@ int main()
 	int x = 0;
 	int l = 0;
 	int c = 0;
+	int num, i;
 
 	Celula* raiz = NULL;
 
@@ -132,157 +134,128 @@ void inicializacao(Celula** raiz, int n, int m)
 }
 
 void imprime(Celula* raiz)
-{ 	
-	int interation = 0;
-	int i = 0;
-	int tamLinha = 0;
-	int tamColuna = 0;
-	Celula* aux = NULL;
-	Celula* aux2 = NULL;
-	Celula* linha = NULL;
-	Celula* percorreColuna = NULL;
+{
+    int valor = 0;
+    int i = 0;
+    int tamLinha = 0;
+    int tamColuna = 0;
+    Celula* aux = NULL;
+    Celula* linha = NULL;
+    Celula* percorreLinha = NULL;
 
-	raiz = raiz->s;
-	while(raiz->l != -1)
-	{
-		raiz = raiz->s;
-		tamLinha++;
-	}
+    // os 2 proximos while encontram o tamanho da matriz
+    raiz = raiz->s;
+    while(raiz->l != -1)
+    {
+        tamLinha++;
+        raiz = raiz->s;
+    }
+    printf("tamLinha = %d\n", tamLinha);
+    raiz = raiz->e;
+    while(raiz->c != -1)
+    {
+        tamColuna++;
+        raiz = raiz->e;
+    }
+    printf("tamColuna = %d\n", tamColuna);
+    // fim encontrou tamanho matriz
 
-	raiz = raiz->e;
-	while(raiz->c != -1)
-	{
-		raiz = raiz->e;
-		tamColuna++;
-	}
+    linha = raiz->s; // posiciona ponteiro em 0x-1
+    percorreLinha = raiz->s; // posiciona ponteiro em 0x-1
 
-	linha = raiz->s;
-	percorreColuna = raiz->e;
-
-	while(linha->l != -1)
-	{
-		if (linha->e == linha)
-		{
-			for(i = 0; i < tamColuna; i++)
-			{
-				printf(" 0 ");
-			}
-			printf("\n");
-			linha = linha->s;
-		}
-		else
-		{
-			aux = linha;
-			aux2 = linha->e;
-			do
-			{
-				if(aux == linha)
-				{
-					interation = aux2->c - (aux->c + 1);
-					for (i = 0; i < interation; i++)
-					{
-						printf(" 0 ");
-					}
-					printf(" %d ", aux2->info);	
-					aux = aux->e;
-					aux2 = aux2->e;
-				}
-				else if(aux2->c != -1)
-				{
-					interation = aux2->c - (aux->c + 1);
-					for (i = 0; i < interation; i++)
-					{
-						printf(" 0 ");
-					}
-					printf(" %d ", aux2->info);	
-					aux = aux->e;
-					aux2 = aux2->e;
-				}
-				else if(aux2 == linha)
-				{
-					interation = tamColuna - (aux->c);
-					for (i = 0; i < interation; i++)
-					{
-						printf(" 0 ");
-					}
-					
-				}
-				else if(aux2->e == linha)
-				{
-					linha = linha->s;
-					printf(" 0 ");
-				}
-			}
-			while(linha->c != -1);
-		linha = linha->s;
-		printf("\n");
-		/*linha = linha->e;*/
-		/*printf("%d %d\n",linha->l, linha->c);*/		
-		}
-	}		
+            while(linha->l != -1)
+            {
+                aux = percorreLinha->e; // aux recebe prox
+                if(aux == linha){ // linha vazia
+                    for(i = 0; i < tamColuna; i++)
+                    {
+                        printf("0 "); // imprime zero para cada coluna
+                    }
+                    printf("\n");
+                    linha = linha->s; // salta para prox linha
+                    percorreLinha = linha;
+                }else{
+                    while(aux->c != -1){
+                        valor = (percorreLinha->c) + 1;
+                        for(i = valor; i < aux->c; i++){
+                            printf("0 ");
+                        }
+                        printf("%d ", aux->info);
+                        aux = aux->e;
+                        percorreLinha = percorreLinha->e;
+                        // unico numero na linha
+                        if(aux->c == -1){ 
+                            valor = (percorreLinha->c) + 1;
+                            for(i = valor; i < tamColuna; i++){
+                                printf("0 ");
+                            }
+                            printf("\n");
+                        }
+                    }
+                    linha = linha->s;
+                    percorreLinha = linha;
+                }
+            }	
 }
 
 void atribui(int x, int l, int c, Celula* raiz)
 {
-	Celula* linha = raiz;
-	Celula* coluna = raiz;
-	Celula* nova = NULL;
-	Celula* percorreLinha = NULL;
-	Celula* percorreColuna = NULL;
-	Celula* aux = NULL;
+    Celula* linha = raiz;
+    Celula* coluna = raiz;
+    Celula* nova = NULL;
+    Celula* percorreLinha = NULL;
+    Celula* percorreColuna = NULL;
+    Celula* aux = NULL;
 
-	nova = (Celula*) malloc(sizeof(Celula));
-	nova->info = x;
-	nova->l = l;
-	nova->c = c;
+    // cria nova celula
+    nova = (Celula*) malloc(sizeof(Celula));
+    nova->info = x;
+    nova->l = l;
+    nova->c = c;
 
-/* Percorrendo as linhas */
+    /* Percorrendo as linhas */
+    while(linha->l < l)
+    {
+        linha = linha->s;
+    }
+    percorreLinha = linha; /* Guarda a referência da linha */
+    
+    while(coluna->c < c)
+    {
+        coluna = coluna->e;
+    }
+    percorreColuna = coluna; /* Guarda a referência da coluna */
+    
+    // percorrer coluna enquanto o indice da linha for 
+    // inferior ou igual (caso ja exista uma celula no local) 
+    // a a linha que quero inserir
+    aux = percorreLinha->e;
+    while(aux->c < c && aux->c != -1){
+        aux = aux->e;
+        percorreLinha = percorreLinha->e;
+    }
+    if(aux->c == c){
+        aux->info = x;
+        // destruir nova
+    }else{
+        nova->e = percorreLinha->e;
+        percorreLinha->e = nova;
+    }
 
-	while(linha->l < l)
-	{
-		linha = linha->s;
-	}
-	percorreLinha = linha; /* Guarda a referência da linha */
-
-	while(coluna->c < c)
-	{
-		coluna = coluna->e;
-	}
-	percorreColuna = coluna; /* Guarda a referência da coluna */
-
-	if (linha->e == linha && coluna->s == coluna)
-	{
-		linha->e = nova;
-		nova->e = linha;
-		nova->s = coluna;
-		coluna->s = nova;
-	}
-
-	else if(linha->e != linha && coluna->s == coluna)
-	{
-		nova->s = coluna;
-		coluna->s = nova;
-
-		while(percorreLinha->c < c)
-		{
-			percorreLinha = percorreLinha->e; /* Ao final deste While, percorreLinha estará apontando para o anterior(linha anterior) */
-		}
-		aux = percorreLinha->e; /* aux apontará para o próximo elemento que será apontado pelo novo */
-		percorreLinha->e = nova;
-		nova->e = aux;
-	}
-
-	else if(linha->e == linha && coluna->s != coluna)
-	{
-		linha->e = nova;
-		nova->e = linha;
-
-		while(percorreLinha->l < l)
-		{
-			percorreColuna = percorreColuna->s; /* Ao final deste While, percorreColuna estará apontando para o anterior(linha anterior) */
-		}
-		aux = percorreColuna->s; /* aux apontará para o próximo elemento que será apontado pelo novo */
-		percorreColuna->s = nova;
-		nova->s = aux;
-	}
+    // percorrer linha enquanto o indice da coluna for
+    // inferior ou igual (caso ja exista uma celula no local)
+    // a a coluna que quero inserir
+    aux = percorreColuna->s;
+    while(aux->l < l && aux->l != -1){
+        aux = aux->s;
+        percorreColuna = percorreColuna->s;
+    }
+    if(aux->l == l){
+        aux->info = x;
+        // destruir nova
+    }
+    else{
+        nova->s = percorreColuna->s;
+        percorreColuna->s = nova;
+    }
 }
