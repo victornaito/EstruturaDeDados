@@ -1,0 +1,77 @@
+void atribui(int x, int l, int c, Celula* raiz)
+{
+    Celula* linha = raiz;
+    Celula* coluna = raiz;
+    Celula* nova = NULL;
+    Celula* percorreLinha = NULL;
+    Celula* percorreColuna = NULL;
+    Celula* aux = NULL;
+
+    // verificar se x != 0
+    if(x != 0){
+        // cria nova celula
+        nova = (Celula*) malloc(sizeof(Celula));
+        nova->info = x;
+        nova->l = l;
+        nova->c = c;
+    }
+
+    /* Percorrendo as linhas */
+    while(linha->l < l)
+    {
+        linha = linha->s;
+    }
+    percorreLinha = linha; /* Guarda a referência da linha */
+    /* Percorrendo as colunas */
+    while(coluna->c < c)
+    {
+        coluna = coluna->e;
+    }
+    percorreColuna = coluna; /* Guarda a referência da coluna */
+        
+    // percorrer coluna enquanto o indice da linha for 
+    // inferior (caso ja exista uma celula no local) 
+    // a a linha que quero inserir
+    aux = percorreLinha->e;
+    while(aux->c < c && aux->c != -1){
+        aux = aux->e;
+        percorreLinha = percorreLinha->e;
+    }
+
+    if(x == 0){
+        if(aux->c == c){
+            // remove celula
+            percorreLinha->e = aux->e;
+        }
+    }
+    else if(aux->c == c){ // se existe uma celula nessa posicao
+        aux->info = x; // substitui o valor
+    }else{ // aponta a linha corretamente
+        nova->e = percorreLinha->e;
+        percorreLinha->e = nova;
+    }
+ 
+    // percorrer linha enquanto o indice da coluna for
+    // inferior (caso ja exista uma celula no local)
+    // a a coluna que quero inserir
+    aux = percorreColuna->s;
+    while(aux->l < l && aux->l != -1){
+        aux = aux->s;
+        percorreColuna = percorreColuna->s;
+    }
+
+    if(x == 0){
+        if(aux->l == l){
+            // remove celula
+            percorreColuna->s = aux->s;
+            free(aux);
+        }
+    }
+    else if(aux->l == l){ // se existe uma celula nessa posicao
+        aux->info = x; // substitui o valor
+    }
+    else{ // aponta a coluna corretamente
+        nova->s = percorreColuna->s;
+        percorreColuna->s = nova;
+    }
+}
